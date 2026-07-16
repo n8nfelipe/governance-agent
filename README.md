@@ -7,6 +7,7 @@ Agent de auditoria de governança de software para ferramentas de IA — analisa
 | Ferramenta | Como instalar | Arquivo de referência |
 |------------|--------------|----------------------|
 | **OpenCode** | `cp governance-agent.md ~/.config/opencode/agents/` | [`configs/opencode.jsonc`](configs/opencode.jsonc) |
+| **Codex CLI** | `./install.sh --codex` ou `cp configs/codex.toml ~/.codex/agents/` | [`configs/codex.toml`](configs/codex.toml) |
 | **Claude Code** | Adicionar em `CLAUDE.md` do projeto | [`configs/claude-code.md`](configs/claude-code.md) |
 | **Cursor** | Criar `.cursor/rules/governance-agent.mdc` | [`configs/cursor.md`](configs/cursor.md) |
 | **GitHub Copilot** | Adicionar em `.github/copilot-instructions.md` | [`configs/copilot.md`](configs/copilot.md) |
@@ -37,11 +38,12 @@ Toda auditoria produz:
 ├── SYSTEM_PROMPT.md           # Prompt genérico (qualquer ferramenta)
 ├── configs/
 │   ├── opencode.jsonc
+│   ├── codex.toml
 │   ├── claude-code.md
 │   ├── cursor.md
 │   ├── copilot.md
 │   └── continue.md
-├── install.sh                 # Instalação via OpenCode
+├── install.sh                 # Instalação via OpenCode (default) ou Codex CLI (--codex)
 ├── src/validate_agent.py      # Validador do arquivo de agente
 ├── tests/                     # Testes (pytest)
 ├── .github/workflows/ci.yml   # CI + release automática
