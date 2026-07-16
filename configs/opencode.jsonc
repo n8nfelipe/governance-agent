@@ -1,0 +1,10 @@
+// Adicione esta seção em ~/.config/opencode/opencode.jsonc
+// ou copie governance-agent.md para ~/.config/opencode/agents/
+{
+  "agents": {
+    "governance-agent": {
+      "description": "Auditor de governança de software",
+      "path": "/caminho/para/governance-agent.md"
+    }
+  }
+}
