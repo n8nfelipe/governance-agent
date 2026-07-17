@@ -2,6 +2,34 @@
 
 Agent de auditoria de governança de software para ferramentas de IA — analisa licenças, dependências, padrões de código, segurança e arquitetura.
 
+## Uso Rápido
+
+Para auditar qualquer projeto, basta **chamar o `governance-agent` e apontar para o diretório alvo**. Não é preciso instalar nada no projeto auditado — o agente lê a estrutura, roda as verificações e gera o relatório.
+
+**OpenCode (slash command):**
+
+```
+/governance-agent audite o projeto em ~/infra/youtube-mcp
+/governance-agent audite o projeto em . "foco em licenças e segurança"
+```
+
+**OpenCode (via CLI `governance`):**
+
+```
+./governance audit ~/infra/youtube-mcp
+./governance audit . "só segurança"
+```
+
+**Codex CLI:**
+
+```
+codex --agent configs/codex.toml "audite o projeto em ~/infra/cloudflare-dns-manager"
+```
+
+**Outras ferramentas:** use o [`SYSTEM_PROMPT.md`](SYSTEM_PROMPT.md) como instrução de sistema e passe o caminho do projeto como argumento.
+
+> O escopo (domínios) pode ser restrito numa frase, ex: `"foque em dependências e segurança"`. Se nenhum escopo for dado, o agente faz a auditoria completa.
+
 ## Suporte por Ferramenta
 
 | Ferramenta | Como instalar | Arquivo de referência |
