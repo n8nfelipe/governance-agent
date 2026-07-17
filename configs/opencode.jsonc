@@ -4,7 +4,7 @@
   "agents": {
     "governance-agent": {
       "description": "Auditor de governança de software",
-      "path": "/caminho/para/governance-agent.md"
+      "path": "$HOME/.config/opencode/agents/governance-agent.md"
     }
   }
 }
