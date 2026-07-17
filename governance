@@ -1,0 +1,98 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+VERSION="1.0.0"
+AGENT_NAME="governance-agent"
+
+usage() {
+  cat <<EOF
+governance v${VERSION} — auditoria de governança de software
+
+Uso:
+  governance audit [diretório] [escopo]   Roda o agente e salva o relatório em Markdown
+  governance install                       Instala o agente no OpenCode/ChatGPT Codex
+  governance version                       Mostra a versão
+
+Exemplos:
+  governance audit .                       Audita o repositório atual (escopo completo)
+  governance audit ./api "só segurança"   Audita um subdiretório com escopo restrito
+  governance audit . | less -R            Pipa a saída formatada para o less
+
+O relatório é salvo em ./governance-report.md (a menos que --stdout seja usado).
+EOF
+}
+
+log() { echo -e "\033[1;34m[governance]\033[0m $*"; }
+err() { echo -e "\033[1;31m[erro]\033[0m $*" >&2; }
+
+cmd_install() {
+  local self_dir
+  self_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+  if [ -x "${self_dir}/install.sh" ]; then
+    "${self_dir}/install.sh" "$@"
+  else
+    err "install.sh não encontrado em ${self_dir}"
+    exit 1
+  fi
+}
+
+cmd_audit() {
+  local target="." scope="auditoria completa de governança" stdout=0
+  local -a passthrough=()
+
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+      --stdout) stdout=1; shift ;;
+      --model|-m) passthrough+=(--model "$2"); shift 2 ;;
+      -h|--help) usage; exit 0 ;;
+      *)
+        if [[ -z "${target_specified:-}" && ( -d "$1" || "$1" == "." || "$1" == ".." ) ]]; then
+          target="$1"; target_specified=1
+        else
+          scope="$1"
+        fi
+        shift ;;
+    esac
+  done
+
+  if ! command -v opencode >/dev/null 2>&1; then
+    err "opencode não está instalado. Instale em https://opencode.ai"
+    exit 1
+  fi
+
+  local abs_target
+  abs_target="$(cd "$target" && pwd)"
+
+  local prompt
+  prompt="$(cat <<EOF
+Faça uma ${scope} no repositório em ${abs_target}.
+
+Instruções:
+- Analise TODOS os domínios de governança (licenças, dependências, padrões de código, segurança, arquitetura).
+- Para cada achado, forneça arquivo:linha exatos e evidências.
+- Rode ferramentas reais disponíveis (eslint, tsc, pnpm/npm audit, git log) em vez de estimar.
+- Produza relatório com resumo executivo (✅/⚠️/❌ por domínio), achados detalhados e checklist priorizado (Must fix / Should fix / Nice to have).
+- Seja objetivo e baseado em evidências.
+EOF
+)"
+
+  log "Auditoria iniciada em: ${abs_target}"
+  log "Escopo: ${scope}"
+
+  local out_file="${abs_target}/governance-report.md"
+  if [[ "$stdout" -eq 1 ]]; then
+    opencode run --agent "$AGENT_NAME" --dir "$abs_target" --format default "${passthrough[@]}" "$prompt"
+  else
+    log "Salvando relatório em: ${out_file}"
+    opencode run --agent "$AGENT_NAME" --dir "$abs_target" --format default "${passthrough[@]}" "$prompt" | tee "$out_file"
+    log "Relatório concluído: ${out_file}"
+  fi
+}
+
+case "${1:-}" in
+  audit) shift; cmd_audit "$@" ;;
+  install) shift; cmd_install "$@" ;;
+  version|-v|--version) echo "governance v${VERSION}"; ;;
+  -h|--help|"") usage; ;;
+  *) err "Comando desconhecido: $1"; usage; exit 1 ;;
+esac

@@ -31,10 +31,41 @@ Toda auditoria produz:
 - **Achados detalhados** — evidências com arquivo:linha
 - **Recomendações priorizadas** — Must fix / Should fix / Nice to have
 
+## Uso como CLI Local
+
+O script `governance` roda o agente em qualquer repositório via OpenCode e salva o relatório:
+
+```bash
+# Tornar executável (já está)
+chmod +x governance
+
+# Auditar repositório atual (escopo completo)
+./governance audit .
+
+# Auditar subdiretório com escopo restrito
+./governance audit ./api "só segurança"
+
+# Salvar relatório em ./governance-report.md (default)
+./governance audit .
+
+# Saída direta no terminal (sem arquivo)
+./governance audit . --stdout | less -R
+
+# Especificar modelo
+./governance audit . --model openai/gpt-5
+
+# Instalar agente no OpenCode ou Codex CLI
+./governance install          # OpenCode (default)
+./governance install --codex  # Codex CLI
+```
+
+Pré-requisitos: [`opencode`](https://opencode.ai) instalado e o agente `governance-agent` disponível (rode `./governance install` primeiro).
+
 ## Estrutura do Projeto
 
 ```
 ├── governance-agent.md        # Agent file (OpenCode)
+├── governance                  # CLI local: roda auditoria em qualquer repo
 ├── SYSTEM_PROMPT.md           # Prompt genérico (qualquer ferramenta)
 ├── configs/
 │   ├── opencode.jsonc
