@@ -1,6 +1,12 @@
-import pytest
 from pathlib import Path
-from src.validate_agent import validate_frontmatter, validate_agent_file, AgentValidationError
+
+import pytest
+
+from src.validate_agent import (
+    AgentValidationError,
+    validate_agent_file,
+    validate_frontmatter,
+)
 
 
 class TestValidateFrontmatter:

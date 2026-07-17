@@ -1,6 +1,6 @@
 from pathlib import Path
-import yaml
 
+import yaml
 
 AGENTS_DIR = Path.home() / ".config" / "opencode" / "agents"
 PERMISSIONS = {"read", "edit", "write", "bash", "webfetch", "websearch"}

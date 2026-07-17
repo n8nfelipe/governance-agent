@@ -22,7 +22,13 @@ jobs:
           python-version: ${{ matrix.python-version }}
 
       - name: Install dependencies
-        run: pip install pyyaml pytest
+        run: pip install pyyaml pytest ruff
+
+      - name: Lint
+        run: ruff check .
+
+      - name: Format check
+        run: ruff format --check .
 
       - name: Validate agent file
         run: python src/validate_agent.py
