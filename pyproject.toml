@@ -4,7 +4,7 @@ version = "1.0.0"
 description = "OpenCode agent for software governance audits"
 requires-python = ">=3.11"
 dependencies = [
-    "pyyaml>=6.0",
+    "pyyaml>=6.0.3",
 ]
 
 [project.optional-dependencies]
